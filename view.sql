@@ -2,23 +2,23 @@
 WITH characters as (SELECT c.id,
                            COALESCE(NULLIF(split_part(array_to_string(c.titles, ','), ',', 1), ''), c.name) || ' ' || c.name AS full_name,
                            --c.name,
-                           substr(c.gender, 1, 1)                as gender,
+                           substr(c.gender, 1, 1)                as gender, -- Tekur fyrsta stafin í gender sem er F eða M.
                            mother.name                           as mother,
                            father.name                           as father,
                            spouse.name                           as spouse,
-                           Regexp_match(c.born, '(\d+) (AC|BC)') as born,
-                           Regexp_match(c.died, '(\d+) (AC|BC)') as died
+                           Regexp_match(c.born, '(\d+) (AC|BC)') as born, -- Finnur einhverja tölur í born dálkinum og tekur annaðhvor AC eða BC með.
+                           Regexp_match(c.died, '(\d+) (AC|BC)') as died -- Finnur einhverja tölur í died dálkinum og tekur annaðhvor AC eða BC með.
                     --age
                     --alive
                     --books (tengja charcters.id við books(id) via character_books
-                    FROM got.characters c -- Held þetta er fyrir titles
+                    FROM got.characters c -- Þetta tekur allt úr characters töfluni og gefur því stittingu c
 
                              left join got.characters mother ON mother.id = c.mother -- Fyrir mother.name
                              left join got.characters father ON father.id = c.father -- Fyrir father.name
-                             left join got.characters spouse ON spouse.id = c.spouse
+                             left join got.characters spouse ON spouse.id = c.spouse -- Fyrir spouse
                     where c.father is not null
                       and c.mother is not null
-                      and c.spouse is not null
+                      and c.spouse is not null -- Þar sem father, mother og spouse er með merkingu í character
                     ),
 
 
