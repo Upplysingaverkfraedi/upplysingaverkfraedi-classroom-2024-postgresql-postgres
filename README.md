@@ -17,8 +17,8 @@ psql -h junction.proxy.rlwy.net -p 55303 -U martell -d railway
 Keyrið **skipun**:
 
 ```sql
-SELECT k.name, k.gid, martell.get_kingdom_size(k.gid) AS area 
-FROM atlas.kingdoms k
+SELECT name, gid, martell.get_kingdom_size(gid) AS area 
+FROM atlas.kingdoms
 ORDER BY area DESC 
 LIMIT 1 OFFSET 2;
 ```

@@ -2,7 +2,12 @@
 
 ### 1. Flatarmál konungsríkja `Flatarmal.sql`
 
-#### Fallið `<teymi>.get_kingdom_size(int kingdom_id)`
+Markmið verkefnisinns er: 
+1. Búa til fallið `<teymi>.get_kingdom_size(int kingdom_id)` sem að tekur inn `kingdom_id` og skilar flatarmáli konungsríkis út frá landfræðilegum gögnum í ferkílómetrum
+2. Finna lausn á ólöglegum gildum `kingdom_id` með því að kasta villu.
+3. Gera SQL fyrirspurn sem að finnur heildarflatarmál þriðja stærsta konungsríkisinns.
+
+#### 1. Fallið `<teymi>.get_kingdom_size(int kingdom_id)`
 
 Þessi hluti býr til eða uppfærir fall sem reiknar flatarmál konungsríkis út frá gefnum kingdom_id. Fallið skilar niðurstöðunni í ferkílómetrum með því að nota PostGIS föll til að reikna flatarmál landfræðilegra gagna.
 
@@ -26,7 +31,7 @@ BEGIN
 - **`DECLARE`**: Yfirlýsing á breytunni `area_sq_km`, sem mun geyma flatarmálið í ferkílómetrum.
 - **`SELECT ROUND(ST_Area(geog::geography) / 1000000) INTO area_sq_km`**: Þetta sækir flatarmálið úr dálkinum `geog` í töflunni `atlas.kingdoms` fyrir gefið `kingdom_id`. Flatarmálið er reiknað með PostGIS fallinu `ST_Area`, sem reiknar flatarmál út frá landfræðilegum gögnunum. Útkoman er í fermetrum, þannig að við deilum með 1.000.000 til að fá flatarmálið í ferkílómetrum. `ROUND` er notað til að rúna niðurstöðuna og fjarlægja aukastafi.
 
-#### Lausn við ólöglegum gildum á `kingdom_id`
+#### 2. Lausn við ólöglegum gildum á `kingdom_id`
 ```sql
 -- 2. Lausn við ólöglegu gildi á kingdom_id
 -- Athugar hvort breytan 'area_sq_km' sé NULL (þ.e. engin niðurstaða fannst fyrir gefið 'kingdom_id').
@@ -48,7 +53,7 @@ $$ LANGUAGE plpgsql;
 - `RETURN area_sq_km`: Fallið skilar niðurstöðunni, sem er flatarmálið í ferkílómetrum, ef það fannst.
 
 
-#### Finna þriðja stærsta konungsríkið
+#### 3. Finna þriðja stærsta konungsríkið
 Nú er fallið notað til að finna flatarmál konungsríkja og raða þeim í lækkandi röð eftir flatarmáli. Fyrirspurnin finnur þriðja stærsta konungsríkið.
 ```sql
 -- 3. Finna þriðja stærsta konungsríkið 
@@ -73,8 +78,8 @@ psql -h junction.proxy.rlwy.net -p 55303 -U martell -d railway
 
 Keyrðu síðan þessa skipun:
 ```sql
-SELECT k.name, k.gid, martell.get_kingdom_size(k.gid) AS area 
-FROM atlas.kingdoms k
+SELECT name, gid, martell.get_kingdom_size(gid) AS area 
+FROM atlas.kingdoms 
 ORDER BY area DESC 
 LIMIT 1 OFFSET 2;
 ```
