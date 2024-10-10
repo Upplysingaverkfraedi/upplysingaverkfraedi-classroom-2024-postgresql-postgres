@@ -1,0 +1,3 @@
+SELECT gid, name, tyrell.get_kingdom_size(gid) AS area_km2
+FROM atlas.kingdoms
+order by area_km2 DESC;
